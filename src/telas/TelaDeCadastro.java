@@ -59,14 +59,67 @@ public class TelaDeCadastro extends javax.swing.JInternalFrame {
                 "Erro ao consultar cliente: " + e.getMessage());
     }
 }
+   private void formatarDocumento() {
+    String texto = txtDoc.getText().replaceAll("[^0-9]", "");
+
+    if (rdPF.isSelected()) {
+        // CPF
+        if (texto.length() > 11) {
+            texto = texto.substring(0, 11);
+        }
+
+        if (texto.length() <= 3) {
+            txtDoc.setText(texto);
+        } else if (texto.length() <= 6) {
+            txtDoc.setText(texto.substring(0, 3) + "." +
+                    texto.substring(3));
+        } else if (texto.length() <= 9) {
+            txtDoc.setText(texto.substring(0, 3) + "." +
+                    texto.substring(3, 6) + "." +
+                    texto.substring(6));
+        } else {
+            txtDoc.setText(texto.substring(0, 3) + "." +
+                    texto.substring(3, 6) + "." +
+                    texto.substring(6, 9) + "-" +
+                    texto.substring(9));
+        }
+
+    } else if (rdPJ.isSelected()) {
+        // CNPJ
+        if (texto.length() > 14) {
+            texto = texto.substring(0, 14);
+        }
+
+        if (texto.length() <= 2) {
+            txtDoc.setText(texto);
+        } else if (texto.length() <= 5) {
+            txtDoc.setText(texto.substring(0, 2) + "." +
+                    texto.substring(2));
+        } else if (texto.length() <= 8) {
+            txtDoc.setText(texto.substring(0, 2) + "." +
+                    texto.substring(2, 5) + "." +
+                    texto.substring(5));
+        } else if (texto.length() <= 12) {
+            txtDoc.setText(texto.substring(0, 2) + "." +
+                    texto.substring(2, 5) + "." +
+                    texto.substring(5, 8) + "/" +
+                    texto.substring(8));
+        } else {
+            txtDoc.setText(texto.substring(0, 2) + "." +
+                    texto.substring(2, 5) + "." +
+                    texto.substring(5, 8) + "/" +
+                    texto.substring(8, 12) + "-" +
+                    texto.substring(12));
+        }
+    }
+}
    private void adicionar(){
   
 
-   String sql = "INSERT INTO TB_Clientes "
+  String sql = "INSERT INTO TB_Clientes "
         + "(Nome_Cliente, Endereco_Cliente, Cidade_Cliente, UF_Cliente, "
         + "documento_cliente, Telefone_Cliente, Data_Nasc_Cliente, status) "
         + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
     try {
 
         pst = conexao.prepareStatement(sql);
@@ -309,6 +362,12 @@ pst.setString(9, txtId.getText());
             }
         });
 
+        txtDoc.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtDocKeyReleased(evt);
+            }
+        });
+
         jLabel2.setText("UF:");
 
         jLabel3.setText("Documento");
@@ -319,9 +378,19 @@ pst.setString(9, txtId.getText());
 
         buttonGroup1.add(rdPF);
         rdPF.setText("PF");
+        rdPF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rdPFActionPerformed(evt);
+            }
+        });
 
         buttonGroup1.add(rdPJ);
         rdPJ.setText("PJ");
+        rdPJ.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rdPJActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -463,6 +532,18 @@ pst.setString(9, txtId.getText());
     private void txtUFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUFActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtUFActionPerformed
+
+    private void txtDocKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDocKeyReleased
+      formatarDocumento();
+    }//GEN-LAST:event_txtDocKeyReleased
+
+    private void rdPFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdPFActionPerformed
+       formatarDocumento();
+    }//GEN-LAST:event_rdPFActionPerformed
+
+    private void rdPJActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdPJActionPerformed
+     formatarDocumento();
+    }//GEN-LAST:event_rdPJActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
